@@ -38,10 +38,12 @@ class CoolPlacesNearMe {
     }
     
     func findPlaces(radius: Double) throws {
-        guard let url = Bundle.main.url(forResource: "data", withExtension: "json") else {
-            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not find data.json in bundle"])
-        }
-        let data = try Data(contentsOf: url)
+        let filePath = "/Users/novyjgost/Desktop/CoolPlacesNearMe/data.json"
+        let fileURL = URL(fileURLWithPath: filePath)
+        
+        print("Attempting to load file at: \(fileURL.path)")
+        
+        let data = try Data(contentsOf: fileURL)
         let decoder = JSONDecoder()
         let placesData = try decoder.decode(PlacesData.self, from: data)
         
@@ -63,7 +65,7 @@ class CoolPlacesNearMe {
         if results.isEmpty {
             print("No places found within \(radius) km.")
         } else {
-            print("Places within \(radius) km from Apriorit office:")
+            print("Places within \(radius) km from reference point:")
             for result in results {
                 print("\(result.name): \(String(format: "%.2f", result.distance)) km")
             }
@@ -71,9 +73,13 @@ class CoolPlacesNearMe {
     }
 }
 
-do {
+do
+{
     let coolPlaces = CoolPlacesNearMe()
     try coolPlaces.findPlaces(radius: 5.0)
-} catch {
+}
+catch
+{
     print("Error: \(error)")
+    exit(1)
 }
